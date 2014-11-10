@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="css/reveal.min.css">
-    <link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
@@ -55,26 +55,167 @@
             <h2>Topics</h2>
             <ul>
                 <li>Why an extension?</li>
-                <li>What extensions can do?</li>
-                <li>The PHP Build System</li>
-                <li>Your first PHP Extension</li>
-                <li>Zvals</li>
-                <li>Hashtables</li>
-                <li>Classes</li>
-                <li>Wrap C++ code in a PHP Extension</li>
+                <li>PHP Life cycle</li>
+                <li>Environment Setup</li>
+                <li>Hello World</li>
+                <li>Memory managment</li>
+                <li>Variables and Data Types</li>
+                <li>Objects</li>
+                <li>Debugging</li>
                 <li>What's next?</li>
             </ul>
         </section>
+        <section>
+            <section>
+                <h2>Why an extension</h2>
+                <h3>What extensions can do?</h3>
+                <p>BOOOh</p>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Environment Setup</h2>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Hello World PHP Extension</h2>
+            </section>
+            <section data-state="customevent">
+                <h3>config.m4</h3>
+                <p>Template to generate a <code class="bash" style="font-size: 0.7em">configure</code> script with phpize.</p>
+					<pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
+dnl config.m4 for extension hello_world
+
+PHP_ARG_WITH(hello_world, whether to enable hello world support,
+[ --enable-hello-world Enable hello world])
+
+if test "$PHP_HELLOWORLD" != "no"; then
+PHP_NEW_EXTENSION(hello_world, hello_world.c, $ext_shared)
+fi
+                    </code></pre>
+            </section>
+            <section data-state="customevent">
+                <h3>php_hello_world.h</h3>
+					<pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;" class="c">
+#ifndef PHP_HELLO_WORLD_H
+#define PHP_HELLO_WORLD_H
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+
+#define PHP_HELLO_WORLD_NAME "hello_world" /* Replace with name of your extension */
+#define PHP_HELLO_WORLD_VERSION "0.1.0" /* Replace with version number for your extension */
+
+#endif	/* PHP_HELLO_WORLD_H */
+                    </code></pre>
+            </section>
+            <section data-state="customevent">
+                <h3>hello_world.c</h3>
+					<pre><code data-trim contenteditable style="font-size: 15px; margin-top: 20px" class="c">
+#include "php_hello_world.h"
+
+PHP_FUNCTION (hello_world) {
+    char *arg = NULL;
+    size_t arg_len, len;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+        return;
+    }
+
+    char greet[1024];
+    strcpy(greet, "Hi ");
+    strcat(greet, arg);
+    strcat(greet, "!");
+
+    RETURN_STRING(greet, 1);
+}
+
+PHP_MINIT_FUNCTION (hello_world) {
+    return SUCCESS;
+}
+
+const zend_function_entry hello_world_functions[] = {
+    PHP_FE(hello_world, NULL)
+    PHP_FE_END
+};
+
+zend_module_entry hello_world_module_entry = {
+    STANDARD_MODULE_HEADER,
+    PHP_HELLO_WORLD_NAME,
+    hello_world_functions,
+    PHP_MINIT(hello_world),
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    PHP_HELLO_WORLD_VERSION,
+    STANDARD_MODULE_PROPERTIES
+};
+
+#ifdef COMPILE_DL_HELLO_WORLD
+ZEND_GET_MODULE(hello_world)
+#endif
+                    </code></pre>
+            </section>
+
+            <section data-state="customevent">
+                <h3>Configure and Build Dinamically</h3>
+					<pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px" class="bash">
+                        phpize
+                    </code></pre>
+                    <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px" class="bash">
+                        ./configure
+                    </code></pre>
+                    <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px" class="bash">
+                        make
+                    </code></pre>
+                    <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px" class="bash">
+                        php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'
+                    </code></pre>
+            </section>
+</section>
+        <section>
+            <section>
+                <h2>Memory Managment</h2>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Variables and Data Types</h2>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Objects</h2>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Debugging</h2>
+            </section>
+        </section>
         <section class="present stack" style="display: block;">
             <section class="future" style="display: block;">
-                <h2>References</h2>
-                <h3>Websites</h3>
+                <h2>What's next?</h2>
+
+                <h3>Spaghetti.io</h3>
+                <ul>
+                    <li><a href="http://spaghetti.io/cont/article/getting-started-with-php-extensions-development/52/1.html">Getting started with PHP Extensions development</a></li>
+                </ul>
+                <h3>Web</h3>
                 <ul>
                     <li><a href="https://github.com/php/php-src/tree/master/ext">php-src/ext</a></li>
-                    <li><a href="https://github.com/search?l=C&q=php&type=Repositories&utf8=%E2%9C%93">Search for PHP filtering for C language on GitHub</a></li>
+                    <li><a href="https://github.com/search?l=C&q=php&type=Repositories&utf8=%E2%9C%93">Search for PHP
+                        filtering for C language on GitHub</a></li>
                     <li><a href="http://phpinternalsbook.com">phpinternalsbook.com</a></li>
-                    <li><a href="http://devzone.zend.com/303/extension-writing-part-i-introduction-to-php-and-zend/">Extension Writing Part I: Introduction to PHP and Zend</a></li>
-                    <li><a href="http://devzone.zend.com/317/extension-writing-part-ii-parameters-arrays-and-zvals">Extension Writing Part II: Parameters, Arrays, and ZVALs</a></li>
+                    <li><a href="http://devzone.zend.com/303/extension-writing-part-i-introduction-to-php-and-zend/">Extension
+                        Writing Part I: Introduction to PHP and Zend</a></li>
+                    <li><a href="http://devzone.zend.com/317/extension-writing-part-ii-parameters-arrays-and-zvals">Extension
+                        Writing Part II: Parameters, Arrays, and ZVALs</a></li>
                 </ul>
                 <h3>Books</h3>
                 <ul>
@@ -111,24 +252,36 @@
 
         // Optional libraries used to extend on reveal.js
         dependencies: [
-            { src: 'lib/js/classList.js', condition: function () {
+            {
+                src: 'lib/js/classList.js', condition: function () {
                 return !document.body.classList;
-            } },
-            { src: 'plugin/markdown/marked.js', condition: function () {
+            }
+            },
+            {
+                src: 'plugin/markdown/marked.js', condition: function () {
                 return !!document.querySelector('[data-markdown]');
-            } },
-            { src: 'plugin/markdown/markdown.js', condition: function () {
+            }
+            },
+            {
+                src: 'plugin/markdown/markdown.js', condition: function () {
                 return !!document.querySelector('[data-markdown]');
-            } },
-            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+            }
+            },
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
                 hljs.initHighlightingOnLoad();
-            } },
-            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+            }
+            },
+            {
+                src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
                 return !!document.body.classList;
-            } },
-            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+            }
+            },
+            {
+                src: 'plugin/notes/notes.js', async: true, condition: function () {
                 return !!document.body.classList;
-            } }
+            }
+            }
         ]
     });
 
