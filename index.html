@@ -58,7 +58,7 @@
                 <li>PHP Life cycle</li>
                 <li>Environment Setup</li>
                 <li>Hello World</li>
-                <li>Memory managment</li>
+                <li>Memory management</li>
                 <li>Variables and Data Types</li>
                 <li>Objects</li>
                 <li>Debugging</li>
@@ -70,6 +70,23 @@
                 <h2>Why an extension</h2>
                 <h3>What extensions can do?</h3>
                 <p>BOOOh</p>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>PHP Life cycle</h2>
+            </section>
+            <section>
+                <h3>CLI (Single request life cycle)</h3>
+                <p><img src="/files/images/cli-life-cycle.png" alt="CLI Life Cycle"></p>
+            </section>
+            <section>
+                <h3>Apache Prefork MPM (Multiprocess life cycles)</h3>
+                <p><img src="/files/images/multiprocess-life-cycles.png" alt="MultiProcess Life Cycles"></p>
+            </section>
+            <section>
+                <h3>Apache Worker MPM (Multithreaded life cycles)</h3>
+                <p><img src="/files/images/multithreaded-life-cycles.png" alt="Multithreaded Life Cycles"></p>
             </section>
         </section>
         <section>
@@ -91,7 +108,7 @@ PHP_ARG_WITH(hello_world, whether to enable hello world support,
 [ --enable-hello-world Enable hello world])
 
 if test "$PHP_HELLOWORLD" != "no"; then
-PHP_NEW_EXTENSION(hello_world, hello_world.c, $ext_shared)
+    PHP_NEW_EXTENSION(hello_world, hello_world.c, $ext_shared)
 fi
                     </code></pre>
             </section>
@@ -180,7 +197,7 @@ ZEND_GET_MODULE(hello_world)
 </section>
         <section>
             <section>
-                <h2>Memory Managment</h2>
+                <h2>Memory Management</h2>
             </section>
         </section>
         <section>
@@ -198,9 +215,13 @@ ZEND_GET_MODULE(hello_world)
                 <h2>Debugging</h2>
             </section>
         </section>
+        <section>
+            <h2>What's next</h2>
+            Embedding, streams etc...
+        </section>
         <section class="present stack" style="display: block;">
             <section class="future" style="display: block;">
-                <h2>What's next?</h2>
+                <h2>References</h2>
 
                 <h3>Spaghetti.io</h3>
                 <ul>
