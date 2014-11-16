@@ -56,7 +56,7 @@ if (window.location.search.match(/print-pdf/gi)) {
             <ul>
                 <li>Why an extension?</li>
                 <li>PHP Life cycles</li>
-                <li>Environment Setup</li>
+                <li>Build Environment Setup</li>
                 <li>Hello World</li>
                 <li>Memory management</li>
                 <li>Variables and Data Types</li>
@@ -91,7 +91,7 @@ if (window.location.search.match(/print-pdf/gi)) {
         </section>
         <section>
             <section>
-                <h2>Environment Setup</h2>
+                <h2>Build Environment Setup</h2>
             </section>
             <section>
                 <p>Grab the latest version of PHP from Github</p>
@@ -113,7 +113,7 @@ git checkout tags/php-5.6.3
             <section>
                 <p>Make and install</p>
                 <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">make -j2
-sudo make installi</code></pre>
+sudo make install</code></pre>
                  <p>According to our configuration options this will compile PHP and install it into the /tmp/php-debug folder.</p>
                  <br>
                  <p>To use it temporarily in place of your working PHP just prepend it's location to the <strong>$PATH</strong></p>
@@ -126,6 +126,68 @@ Copyright (c) 1997-2014 The PHP Group
 Zend Engine v2.6.0, Copyright (c) 1998-2014 Zend Technologies
                 </code></pre>
  
+            </section>
+            <section>
+            <h3>Just remember that</h3>
+            <pre><code data-trim contenteditable>PHP With Debug Flags === Overhead</code></pre>
+
+            <table class="reveal">
+                <tr>
+                    <td>PHP</td>
+                    <td>PHP (DEBUG)</td>
+                </tr>
+                <tr>
+                    <td>
+            <pre><code class="bash" data-trim contenteditable>
+php Zend/bench.php                 
+simple             0.058
+simplecall         0.083
+simpleucall        0.087
+simpleudcall       0.088
+mandel             0.145
+mandel2            0.198
+ackermann(7)       0.078
+ary(50000)         0.014
+ary2(50000)        0.015
+ary3(2000)         0.123
+fibo(30)           0.275
+hash1(50000)       0.025
+hash2(500)         0.022
+heapsort(20000)    0.058
+matrix(20)         0.064
+nestedloop(12)     0.111
+sieve(30)          0.075
+strcat(200000)     0.009
+------------------------
+Total              1.527
+            </code></pre>
+        </td>
+        <td>
+ <pre><code class="bash" data-trim contenteditable>
+ php Zend/bench.php 
+ simple             0.234
+ simplecall         0.433
+ simpleucall        0.479
+ simpleudcall       0.482
+ mandel             0.606
+ mandel2            0.896
+ ackermann(7)       0.412
+ ary(50000)         0.058
+ ary2(50000)        0.054
+ ary3(2000)         0.396
+ fibo(30)           1.404
+ hash1(50000)       0.088
+ hash2(500)         0.099
+ heapsort(20000)    0.234
+ matrix(20)         0.205
+ nestedloop(12)     0.355
+ sieve(30)          0.247
+ strcat(200000)     0.033
+ ------------------------
+ Total              6.716
+            </code></pre>
+        </tr>
+    </table>
             </section>
         </section>
         <section>
@@ -186,6 +248,7 @@ PHP_FUNCTION (hello_world) {
 }
 
 PHP_MINIT_FUNCTION (hello_world) {
+            <p>This is a simple benchmark with the CLI Sapi to appreciate the difference.</p>
     return SUCCESS;
 }
 
@@ -247,6 +310,15 @@ ZEND_GET_MODULE(hello_world)
         <section>
             <section>
                 <h2>Debugging</h2>
+            </section>
+            <section>
+                <h3>Just GDB</h3>
+                <pre style="width: 110%"><code>gdb --tui --args php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'</code></pre>
+                <h3>Or perhaps CGDB</h3>
+                <pre style="width: 110%"><code>cgdb --args php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'</code></pre>
+            </section>
+            <section>
+                <h3>Macro Expansion</h3>
             </section>
         </section>
         <section>
