@@ -158,29 +158,29 @@ Zend Engine v2.6.0, Copyright (c) 1998-2014 Zend Technologies
                     </tr>
                     <tr>
                         <td>
-                            <pregdb --tui --args ><code class="bash" data-trim contenteditable>
-                                php Zend/bench.php                 
-                                simple             0.058
-                                simplecall         0.083
-                                simpleucall        0.087
-                                simpleudcall       0.088
-                                mandel             0.145
-                                mandel2            0.198
-                                ackermann(7)       0.078
-                                ary(50000)         0.014
-                                ary2(50000)        0.015
-                                ary3(2000)         0.123
-                                fibo(30)           0.275
-                                hash1(50000)       0.025
-                                hash2(500)         0.022
-                                heapsort(20000)    0.058
-                                matrix(20)         0.064
-                                nestedloop(12)     0.111
-                                sieve(30)          0.075
-                                strcat(200000)     0.009
-                                ------------------------
-                                Total              1.527
-                            </code></pre>
+                            <pre><code class="bash" data-trim contenteditable>
+php Zend/bench.php                 
+simple             0.058
+simplecall         0.083
+simpleucall        0.087
+simpleudcall       0.088
+mandel             0.145
+mandel2            0.198
+ackermann(7)       0.078
+ary(50000)         0.014
+ary2(50000)        0.015
+ary3(2000)         0.123
+fibo(30)           0.275
+hash1(50000)       0.025
+hash2(500)         0.022
+heapsort(20000)    0.058
+matrix(20)         0.064
+nestedloop(12)     0.111
+sieve(30)          0.075
+strcat(200000)     0.009
+------------------------
+Total              1.527
+</code></pre>
                         </td>
                         <td>
                             <pre><code class="bash" data-trim contenteditable>
@@ -357,8 +357,8 @@ ZEND_GET_MODULE(hello_world)
                         <tr>
                             <td><code class="code">void *erealloc(void *ptr, size_t count); </code><br><code class="code">void *perealloc(void *ptr, size_t count, char persistent);</code></td>
                             <td>
-                                Resize the buffer <code class="code">ptr</code>, which was allocated using
-                                <code class="code">emalloc</code> to hold <code class="code">size</code> bytes of memory.
+                         esize the buffer <code class="code">ptr</code>, which was allocated using
+                         <code class="code">emalloc</code> to hold <code class="code">size</code> bytes of memory.
                             </td>
                         </tr>
 
@@ -389,12 +389,174 @@ ZEND_GET_MODULE(hello_world)
                 <section>
                     <h2>Variables and Data Types</h2>
                 </section>
+                <section>
+                <h3>Zval</h3>
+                <pre><code>
+typedef struct _zval_struct {
+    zvalue_value value;        /* variable value */
+    zend_uint refcount__gc;    /* reference counter */
+    zend_uchar type;           /* value type */
+    zend_uchar is_ref__gc;     /* reference flag */
+} zval;
+</code></pre>
+                </section>
+                <section>
+                    <h3>zval_value</h3>
+<p>The zval_value is a union which can represent all types a variable may hold:</p>
+                    <pre><code>
+typedef struct _zval_struct {
+    zvalue_value value;        /* variable value */
+    zend_uint refcount__gc;    /* reference counter */
+    zend_uchar type;           /* value type */
+    zend_uchar is_ref__gc;     /* reference flag */
+} zval;
+</code></pre>
+                </section>
+            <section>
+            <h3>Data Types</h3>
+<table id="internals2.variables.types.api" class="doctable table">
+   <caption><strong>Native Type Constants</strong></caption>
+    <thead>
+     <tr>
+      <th>Constant</th>
+      <th>Mapping</th>
+     </tr>
+    </thead>
+    <tbody class="tbody">
+     <tr>
+      <td><code class="code">IS_NULL</code></td>
+      <td>no value is set in this case</td>
+     </tr>
+     <tr>
+      <td><code class="code">IS_LONG</code></td>
+      <td>lval</td>
+     </tr>
+     <tr>
+      <td><code class="code">IS_DOUBLE</code></td>
+      <td>dval</td>
+     </tr>
+     <tr>
+      <td><code class="code">IS_BOOL</code></td>
+      <td>lval</td>
+     </tr>
+     <tr>
+      <td>IS_RESOURCE</td>
+      <td>lval</td>
+     </tr>
+     <tr>
+      <td>IS_STRING</td>
+      <td>str</td>
+     </tr>
+     <tr>
+      <td><code class="code">IS_ARRAY</code></td>
+      <td>ht</td>
+     </tr>
+     <tr>
+      <td><code class="code">IS_OBJECT</code></td>
+      <td>obj</td>
+     </tr>
+    </tbody>
+  </table>
             </section>
+
+            <section>
+            <h3>Value and type retrieval</h3>
+                <pre><code style="font-size:18px">void display_values(zval boolzv, zval *longpzv,
+                zval **doubleppzv, zval *zstr)
+{
+    if (Z_TYPE(boolzv) == IS_BOOL) {
+        php_printf("The value of the boolean is: %s\n",
+            Z_BVAL(boolzv) ? "true" : "false");
+    }
+    if (Z_TYPE_P(longpzv) == IS_LONG) {
+        php_printf("The value of the long is: %ld\n",
+            Z_LVAL_P(longpzv));
+    }
+    if (Z_TYPE_PP(doubleppzv) == IS_DOUBLE) {
+        php_printf("The value of the double is: %f\n",
+            Z_DVAL_PP(doubleppzv));
+    }
+    if (Z_TYPE_PP(doubleppzv) == IS_DOUBLE) {
+        php_printf("The value of the double is: %f\n",
+            Z_DVAL_PP(doubleppzv));
+    }
+    if (Z_TYPE_P(zstr) == IS_STRING) {
+        php_printf("The length of the string is: %ld\n",
+            Z_STRLEN_P(zstr));
+        php_printf("The content of the string is %s\n",
+            Z_STRVAL_P(zstr));
+    }
+}
+</pre></code>
+            </section>
+            </section>
+
             <section>
                 <section>
                     <h2>Objects</h2>
                 </section>
+                <section>
+                <h3>Objects</h3>
+<ul>
+    <li>zend_class_entry is the internal representation of a class definition</li>
+    <li>Methods are defined like functions with PHP_METHOD</li>
+    <li>Methods are declared with the PHP_ME, PHP_MALIAS and PHP_ABSTRACT_ME macros</li>
+</ul>
+                </section>
+                <section>
+                    <h3>A simple Class</h3>
+                    <pre><code>zend_class_entry *ce_Example;
+
+zend_function_entry php_example_methods[] = {
+    PHP_FE_END
+};
+
+PHP_MINIT_FUNCTION(example) {
+    zend_class_entry ce_example_local;
+    INIT_CLASS_ENTRY(ce_example_local, “Example”, php_example_methods);
+    ce_Example = zend_register_internal_class(&ce_example_local TSRMLS_CC);
+    return SUCCESS;
+}
+</code></pre>
+                </section>
+            <section>
+            <h3>Add a method</h3>
+            <pre><code>PHP_METHOD(example, setName) {
+   zval *obj;
+
+    char *name;
+    int name_len;
+
+    if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &obj, ce_Example, &name, &name_len) == FAILURE) {
+        RETURN_NULL();
+    }
+    
+    zend_update_property_string(cld2_detector_ce, obj, "name", sizeof("name") - 1, name TSRMLS_CC);
+
+}
+</code></pre>
             </section>
+            <section>
+            <h3>Add arguments informations</h3>
+            <pre><code>ZEND_BEGIN_ARG_INFO(arginfo_example_set_name, 0)
+    ZEND_ARG_INFO(0, name)
+ZEND_END_ARG_INFO()</pre></code>
+            </section>
+            <section>
+            <h3>Declare the method and update the MINIT</h3>
+            <pre><code>zend_function_entry php_example_methods[] = {
+    PHP_ME(example, setName, arginfo_example_set_name, ZEND_ACC_PUBLIC)
+}
+
+PHP_MINIT_FUNCTION(example) {
+    zend_class_entry ce_example_local;
+    INIT_CLASS_ENTRY(ce_example_local, “Example”, php_example_methods);
+    ce_Example = zend_register_internal_class(&ce_example_local TSRMLS_CC);
+    zend_declare_property_string(ce_Example, "name", sizeof("name") - 1, "", ZEND_ACC_PUBLIC TSRMLS_CC);
+    return SUCCESS;
+}</code></pre>
+            </section>
+</section>
             <section>
                 <section>
                     <h2>Debugging</h2>
