@@ -114,7 +114,7 @@ if (window.location.search.match(/print-pdf/gi)) {
                 <h2>Build Environment Setup</h2>
             </section>
             <section>
-                <p>Grab the latest version of PHP from Github</p>
+                <p>Grab the latest PHP version from Github</p>
                 <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">git clone https://github.com/php/php-src.git
 git checkout tags/php-5.6.3         
                 </code></pre>
@@ -259,7 +259,7 @@ PHP_FUNCTION (hello_world) {
         return;
     }
 
-    char greet[1024];
+    char *greet = emalloc(strlen("Hi ") + strlen(arg) + strlen("!") + 1);
     strcpy(greet, "Hi ");
     strcat(greet, arg);
     strcat(greet, "!");
@@ -321,7 +321,7 @@ ZEND_GET_MODULE(hello_world)
                     <p>
                     <ul>
                         <li>Implicit memory cleanup at the end of each request</li>
-                        <li>Wraps OS's memory management layer providing the e* contuerparts</li>
+                        <li>Wraps OS's memory management layer providing the e* counterparts</li>
                         <li>Allows persistent allocation via the p* allocators</li>
                     </ul>
                     </p>
@@ -383,7 +383,6 @@ ZEND_GET_MODULE(hello_world)
                         </tbody>
 
                     </table>
-                </section>
             </section>
             <section>
                 <section>
@@ -391,6 +390,7 @@ ZEND_GET_MODULE(hello_world)
                 </section>
                 <section>
                 <h3>Zval</h3>
+                <p>The fundamental unit of data storage in PHP</p>
                 <pre><code>
 typedef struct _zval_struct {
     zvalue_value value;        /* variable value */
@@ -458,6 +458,43 @@ typedef struct _zval_struct {
     </tbody>
   </table>
             </section>
+            <section>
+            <h3>Data Creation</h3>
+            <ul>
+                <li>There is a macro for this: <code>MAKE_STD_ZVAL(pzv)</code></li>
+                <li>Using this macro the zval will be in an optimized chunk of memory near other zvals.</li>
+                <li>The macro has also the advantage to automatically handle out of memory errors and initialize refcount and is_ref properties</li>
+                <li>To populate a zval there's another gang of macros: ZVAL_NULL(pzv), ZVAL_BOOL(pzv, b), ZVAL_LONG(pzv, l), ZVAL_STRING(pzv, str, dup) and others </li>
+            </ul>
+            </section>
+            <section>
+                <h3>Data storage</h3>
+                <ul>
+                    <li>Any single variable in PHP is stored in an internal array called symbol table</li>
+                    <li>The current symbol table is called active symbol table, if the current execution is not in a function or method scope the global symbol table is the active one</li>
+                    <li>The global scope symbol table is initialized just before the RINIT and destroyed after RSHUTDOWN</li>
+                    <li>The main symbol table and active symbol table are defined in Zend/zend_globals.h</li>
+                    <li>Global symbol table can be accessed with EG(symbol_table)</li>
+                    <li>Active symbol table can be accessed with EG(active_symbol_table)</li>
+                <ul>
+            </section>
+            <section>
+            <h3>Data storage example</h3>
+            <table>
+                <tr>
+                    <td>
+                        <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">$foo = 'bar';</code></pre>
+                    </td>
+                    <td>
+                        <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">zval *foo;
+MAKE_STD_ZVAL(foo);
+ZVAL_STRING(foo, "bar", 1)
+ZEND_SET_SYMBOL(EG(active_symbol_table), "foo", foo);</code></pre>
+                    </td>
+                </tr>
+            </table>
+            <p>The new thing here is the  <code>ZEND_SET_SYMBOL(symtable, name, var)</code> macro that exposes the foo variable to the userland via active_symbol_table</p>
+            </section>
 
             <section>
             <h3>Value and type retrieval</h3>
@@ -504,7 +541,7 @@ typedef struct _zval_struct {
 </ul>
                 </section>
                 <section>
-                    <h3>A simple Class</h3>
+                    <h3>A sample Class</h3>
                     <pre><code>zend_class_entry *ce_Example;
 
 zend_function_entry php_example_methods[] = {
