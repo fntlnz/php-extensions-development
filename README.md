@@ -1,7 +1,3 @@
 ## PHP Extensions Development
 
-[See on SlideShare](#todo)
-
-[See live version](#todo)
-
-Slides based on reveal.js
+[Online version](http://fntlnz.github.io/php-extensions-development)
