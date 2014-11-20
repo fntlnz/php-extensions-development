@@ -82,15 +82,13 @@ if (window.location.search.match(/print-pdf/gi)) {
                 <li>Variables and Data Types</li>
                 <li>Objects</li>
                 <li>Debugging</li>
-                <li>What's next?</li>
             </ul>
         </section>
         <section>
-            <section>
-                <h2>Why an extension</h2>
-                <h3>What extensions can do?</h3>
-                <p>BOOOh</p>
-            </section>
+            <h2>Why an extension?</h2>
+            <p>Link against an external library</p>
+			<p>Performances optimization</p>
+			<p>To better understand PHP internals</p>
         </section>
         <section>
             <section>
@@ -116,7 +114,7 @@ if (window.location.search.match(/print-pdf/gi)) {
             <section>
                 <p>Grab the latest PHP version from Github</p>
                 <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">git clone https://github.com/php/php-src.git
-git checkout tags/php-5.6.3         
+git checkout tags/php-5.6.3
                 </code></pre>
             </section>
             <section>
@@ -126,7 +124,7 @@ git checkout tags/php-5.6.3
                 <p>
                 <ul style="font-size:28px">
                     <li><strong>enable-debug</strong> :Memory leaks reporting and compile with debugging symbols</li>
-                    <li><strong>enable-maintainer-zts</strong> : Build with the thread-safe resource manager 
+                    <li><strong>enable-maintainer-zts</strong> : Build with the thread-safe resource manager
                 </ul>
                 </p>
             </section>
@@ -159,7 +157,7 @@ Zend Engine v2.6.0, Copyright (c) 1998-2014 Zend Technologies
                     <tr>
                         <td>
                             <pre><code class="bash" data-trim contenteditable>
-php Zend/bench.php                 
+php Zend/bench.php
 simple             0.058
 simplecall         0.083
 simpleucall        0.087
@@ -180,11 +178,11 @@ sieve(30)          0.075
 strcat(200000)     0.009
 ------------------------
 Total              1.527
-</code></pre>
+                            </code></pre>
                         </td>
                         <td>
                             <pre><code class="bash" data-trim contenteditable>
- php Zend/bench.php 
+ php Zend/bench.php
  simple             0.234
  simplecall         0.433
  simpleucall        0.479
@@ -317,7 +315,7 @@ ZEND_GET_MODULE(hello_world)
                     <h2>Memory Management</h2>
                 </section>
                 <section>
-                    <h3>(ZMM) Zend Memory Manager</h3> 
+                    <h3>(ZMM) Zend Memory Manager</h3>
                     <p>
                     <ul>
                         <li>Implicit memory cleanup at the end of each request</li>
@@ -357,148 +355,161 @@ ZEND_GET_MODULE(hello_world)
                         <tr>
                             <td><code class="code">void *erealloc(void *ptr, size_t count); </code><br><code class="code">void *perealloc(void *ptr, size_t count, char persistent);</code></td>
                             <td>
-                         esize the buffer <code class="code">ptr</code>, which was allocated using
-                         <code class="code">emalloc</code> to hold <code class="code">size</code> bytes of memory.
+                                esize the buffer <code class="code">ptr</code>, which was allocated using
+                                <code class="code">emalloc</code> to hold <code class="code">size</code> bytes of memory.
                             </td>
                         </tr>
 
 
                         <tr>
-                            <td><code class="code">void efree(void *ptr);</code><br><code class="code">void pefree(void *ptr, char persistent);<code></td>
-                            <td>
-                                Free the buffer pointed by <code class="code">ptr</code>. The buffer had to be 
-                                allocated by <code class="code">emalloc</code>.
-                            </td>
-                        </tr>
+                            <td><code class="code">void efree(void *ptr);</code><br><code class="code">void pefree(void *ptr, char persistent);</code></td>
+                                    <td>
+                                        Free the buffer pointed by <code class="code">ptr</code>. The buffer had to be
+                                        allocated by <code class="code">emalloc</code>.
+                                    </td>
+                                </tr>
 
 
-                        <tr>
-                            <td><code class="code">void *estrdup(void *ptr); <br><code class="code">void *pestrdup(void *ptr, char persistent);<code></td>
-                            <td>
-                                Allocate a buffer that can hold the NULL-terminated string
-                                <code class="code">s</code> and copy the <code class="code">s</code> into that buffer.
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td><code class="code">void *estrdup(void *ptr); <br><code class="code">void *pestrdup(void *ptr, char persistent);</code></td>
+                                                <td>
+                                                    Allocate a buffer that can hold the NULL-terminated string
+                                                    <code class="code">s</code> and copy the <code class="code">s</code> into that buffer.
+                                                </td>
+                                            </tr>
 
-                        </tbody>
+                                            </tbody>
 
-                    </table>
-            </section>
-            <section>
-                <section>
-                    <h2>Variables and Data Types</h2>
-                </section>
-                <section>
-                <h3>Zval</h3>
-                <p>The fundamental unit of data storage in PHP</p>
-                <pre><code>
+                                        </table>
+                                    </section>
+                                </section>
+                                <section>
+                                    <section>
+                                        <h2>Variables and Data Types</h2>
+                                    </section>
+                                    <section>
+                                        <h3>Zval</h3>
+                                        <p>The fundamental unit of data storage in PHP</p>
+                                        <pre><code>
 typedef struct _zval_struct {
     zvalue_value value;        /* variable value */
     zend_uint refcount__gc;    /* reference counter */
     zend_uchar type;           /* value type */
     zend_uchar is_ref__gc;     /* reference flag */
 } zval;
-</code></pre>
-                </section>
-                <section>
-                    <h3>zval_value</h3>
-<p>The zval_value is a union which can represent all types a variable may hold:</p>
-                    <pre><code>
-typedef struct _zval_struct {
-    zvalue_value value;        /* variable value */
-    zend_uint refcount__gc;    /* reference counter */
-    zend_uchar type;           /* value type */
-    zend_uchar is_ref__gc;     /* reference flag */
-} zval;
-</code></pre>
-                </section>
-            <section>
-            <h3>Data Types</h3>
-<table id="internals2.variables.types.api" class="doctable table">
-   <caption><strong>Native Type Constants</strong></caption>
-    <thead>
-     <tr>
-      <th>Constant</th>
-      <th>Mapping</th>
-     </tr>
-    </thead>
-    <tbody class="tbody">
-     <tr>
-      <td><code class="code">IS_NULL</code></td>
-      <td>no value is set in this case</td>
-     </tr>
-     <tr>
-      <td><code class="code">IS_LONG</code></td>
-      <td>lval</td>
-     </tr>
-     <tr>
-      <td><code class="code">IS_DOUBLE</code></td>
-      <td>dval</td>
-     </tr>
-     <tr>
-      <td><code class="code">IS_BOOL</code></td>
-      <td>lval</td>
-     </tr>
-     <tr>
-      <td>IS_RESOURCE</td>
-      <td>lval</td>
-     </tr>
-     <tr>
-      <td>IS_STRING</td>
-      <td>str</td>
-     </tr>
-     <tr>
-      <td><code class="code">IS_ARRAY</code></td>
-      <td>ht</td>
-     </tr>
-     <tr>
-      <td><code class="code">IS_OBJECT</code></td>
-      <td>obj</td>
-     </tr>
-    </tbody>
-  </table>
-            </section>
-            <section>
-            <h3>Data Creation</h3>
-            <ul>
-                <li>There is a macro for this: <code>MAKE_STD_ZVAL(pzv)</code></li>
-                <li>Using this macro the zval will be in an optimized chunk of memory near other zvals.</li>
-                <li>The macro has also the advantage to automatically handle out of memory errors and initialize refcount and is_ref properties</li>
-                <li>To populate a zval there's another gang of macros: ZVAL_NULL(pzv), ZVAL_BOOL(pzv, b), ZVAL_LONG(pzv, l), ZVAL_STRING(pzv, str, dup) and others </li>
-            </ul>
-            </section>
-            <section>
-                <h3>Data storage</h3>
-                <ul>
-                    <li>Any single variable in PHP is stored in an internal array called symbol table</li>
-                    <li>The current symbol table is called active symbol table, if the current execution is not in a function or method scope the global symbol table is the active one</li>
-                    <li>The global scope symbol table is initialized just before the RINIT and destroyed after RSHUTDOWN</li>
-                    <li>The main symbol table and active symbol table are defined in Zend/zend_globals.h</li>
-                    <li>Global symbol table can be accessed with EG(symbol_table)</li>
-                    <li>Active symbol table can be accessed with EG(active_symbol_table)</li>
-                <ul>
-            </section>
-            <section>
-            <h3>Data storage example</h3>
-            <table>
-                <tr>
-                    <td>
-                        <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">$foo = 'bar';</code></pre>
-                    </td>
-                    <td>
-                        <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">zval *foo;
+                                        </code></pre>
+                                    </section>
+                                    <section>
+                                        <h3>zvalue_value</h3>
+                                        <p>The zval_value is a union which can represent all types a variable may hold:</p>
+                                        <pre><code>typedef union _zvalue_value {
+    long lval;
+    double dval;
+    struct {
+        char *val;
+        int len;
+    } str;
+    HashTable *ht;
+    zend_object_value obj;
+} zvalue_value;
+                                       </code></pre>
+                                    </section>
+                                    <section>
+                                        <h3>Data Types</h3>
+                                        <table id="internals2.variables.types.api" class="doctable table">
+                                            <caption><strong>Native Type Constants</strong></caption>
+                                            <thead>
+                                                <tr>
+                                                    <th>Constant</th>
+                                                    <th>Mapping</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="tbody">
+                                            <tr>
+                                                <td><code class="code">IS_NULL</code></td>
+                                                <td>no value is set in this case</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code class="code">IS_LONG</code></td>
+                                                <td>lval</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code class="code">IS_DOUBLE</code></td>
+                                                <td>dval</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code class="code">IS_BOOL</code></td>
+                                                <td>lval</td>
+                                            </tr>
+                                            <tr>
+                                                <td>IS_RESOURCE</td>
+                                                <td>lval</td>
+                                            </tr>
+                                            <tr>
+                                                <td>IS_STRING</td>
+                                                <td>str</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code class="code">IS_ARRAY</code></td>
+                                                <td>ht</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code class="code">IS_OBJECT</code></td>
+                                                <td>obj</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </section>
+                                    <section>
+                                        <h3>Data Creation</h3>
+                                        <ul>
+                                            <li>There is a macro for this: <code>MAKE_STD_ZVAL(pzv)</code></li>
+                                            <li>Using this macro the zval will be in an optimized chunk of memory near other zvals.</li>
+                                            <li>The macro has also the advantage to automatically handle out of memory errors and initialize refcount and is_ref properties</li>
+                                            <li>To populate a zval there's another gang of macros: ZVAL_NULL(pzv), ZVAL_BOOL(pzv, b), ZVAL_LONG(pzv, l), ZVAL_STRING(pzv, str, dup) and others </li>
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h3>Data storage</h3>
+                                        <ul>
+                                            <li>Any single variable in PHP is stored in an internal array called symbol
+                                                table
+                                            </li>
+                                            <li>The current symbol table is called active symbol table, if the current
+                                                execution is not in a function or method scope the global symbol table
+                                                is the active one
+                                            </li>
+                                            <li>The global scope symbol table is initialized just before the RINIT and
+                                                destroyed after RSHUTDOWN
+                                            </li>
+                                            <li>The main symbol table and active symbol table are defined in
+                                                Zend/zend_globals.h
+                                            </li>
+                                            <li>Global symbol table can be accessed with EG(symbol_table)</li>
+                                            <li>Active symbol table can be accessed with EG(active_symbol_table)</li>
+                                        </ul>
+                                            </section>
+                                            <section>
+                                                <h3>Data storage example</h3>
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">$foo = 'bar';</code></pre>
+                                                        </td>
+                                                        <td>
+                                                            <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">zval *foo;
 MAKE_STD_ZVAL(foo);
 ZVAL_STRING(foo, "bar", 1)
 ZEND_SET_SYMBOL(EG(active_symbol_table), "foo", foo);</code></pre>
-                    </td>
-                </tr>
-            </table>
-            <p>The new thing here is the  <code>ZEND_SET_SYMBOL(symtable, name, var)</code> macro that exposes the foo variable to the userland via active_symbol_table</p>
-            </section>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <p>The new thing here is the  <code>ZEND_SET_SYMBOL(symtable, name, var)</code> macro that exposes the foo variable to the userland via active_symbol_table</p>
+                                            </section>
 
-            <section>
-            <h3>Value and type retrieval</h3>
-                <pre><code style="font-size:18px">void display_values(zval boolzv, zval *longpzv,
+                                            <section>
+                                                <h3>Value and type retrieval</h3>
+                                                <pre><code style="font-size:18px">void display_values(zval boolzv, zval *longpzv,
                 zval **doubleppzv, zval *zstr)
 {
     if (Z_TYPE(boolzv) == IS_BOOL) {
@@ -524,25 +535,24 @@ ZEND_SET_SYMBOL(EG(active_symbol_table), "foo", foo);</code></pre>
             Z_STRVAL_P(zstr));
     }
 }
-</pre></code>
-            </section>
-            </section>
-
-            <section>
-                <section>
-                    <h2>Objects</h2>
-                </section>
-                <section>
-                <h3>Objects</h3>
-<ul>
-    <li>zend_class_entry is the internal representation of a class definition</li>
-    <li>Methods are defined like functions with PHP_METHOD</li>
-    <li>Methods are declared with the PHP_ME, PHP_MALIAS and PHP_ABSTRACT_ME macros</li>
-</ul>
-                </section>
-                <section>
-                    <h3>A sample Class</h3>
-                    <pre><code>zend_class_entry *ce_Example;
+                                            </code></pre>
+                                        </section>
+                                    </section>
+                                <section>
+                                    <section>
+                                        <h2>Objects</h2>
+                                    </section>
+                                    <section>
+                                        <h3>Objects</h3>
+                                        <ul>
+                                            <li>zend_class_entry is the internal representation of a class definition</li>
+                                            <li>Methods are defined like functions with PHP_METHOD</li>
+                                            <li>Methods are declared with the PHP_ME, PHP_MALIAS and PHP_ABSTRACT_ME macros</li>
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h3>A sample Class</h3>
+                                        <pre><code>zend_class_entry *ce_Example;
 
 zend_function_entry php_example_methods[] = {
     PHP_FE_END
@@ -554,11 +564,11 @@ PHP_MINIT_FUNCTION(example) {
     ce_Example = zend_register_internal_class(&ce_example_local TSRMLS_CC);
     return SUCCESS;
 }
-</code></pre>
-                </section>
-            <section>
-            <h3>Add a method</h3>
-            <pre><code>PHP_METHOD(example, setName) {
+                                        </code></pre>
+                                    </section>
+                                    <section>
+                                        <h3>Add a method</h3>
+                                        <pre><code>PHP_METHOD(example, setName) {
    zval *obj;
 
     char *name;
@@ -567,21 +577,21 @@ PHP_MINIT_FUNCTION(example) {
     if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &obj, ce_Example, &name, &name_len) == FAILURE) {
         RETURN_NULL();
     }
-    
+
     zend_update_property_string(cld2_detector_ce, obj, "name", sizeof("name") - 1, name TSRMLS_CC);
 
 }
-</code></pre>
-            </section>
-            <section>
-            <h3>Add arguments informations</h3>
-            <pre><code>ZEND_BEGIN_ARG_INFO(arginfo_example_set_name, 0)
+                                        </code></pre>
+                                    </section>
+                                    <section>
+                                        <h3>Add arguments information</h3>
+                                        <pre><code>ZEND_BEGIN_ARG_INFO(arginfo_example_set_name, 0)
     ZEND_ARG_INFO(0, name)
-ZEND_END_ARG_INFO()</pre></code>
-            </section>
-            <section>
-            <h3>Declare the method and update the MINIT</h3>
-            <pre><code>zend_function_entry php_example_methods[] = {
+ZEND_END_ARG_INFO()</code></pre>
+                                    </section>
+                                    <section>
+                                        <h3>Declare the method and update the MINIT</h3>
+                                        <pre><code>zend_function_entry php_example_methods[] = {
     PHP_ME(example, setName, arginfo_example_set_name, ZEND_ACC_PUBLIC)
 }
 
@@ -592,62 +602,58 @@ PHP_MINIT_FUNCTION(example) {
     zend_declare_property_string(ce_Example, "name", sizeof("name") - 1, "", ZEND_ACC_PUBLIC TSRMLS_CC);
     return SUCCESS;
 }</code></pre>
-            </section>
-</section>
-            <section>
-                <section>
-                    <h2>Debugging</h2>
-                    <h3>Just GDB</h3>
-                    <pre style="width: 110%"><code>gdb --tui --args php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'</code></pre>
-                    <h3>Or perhaps CGDB</h3>
-                    <pre style="width: 110%"><code>cgdb --args php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'</code></pre>
-                </section>
-            </section>
-            <section>
-                <h2>What's next</h2>
-                Embedding, streams etc...
-            </section>
-            <section class="present stack" style="display: block;">
-                <section class="future" style="display: block;">
-                    <h2>References</h2>
+                                    </section>
+                                </section>
+                                <section>
+                                    <section>
+                                        <h2>Debugging</h2>
+                                        <h3>Just GDB</h3>
+                                        <pre style="width: 110%"><code>gdb --tui --args php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'</code></pre>
+                                        <h3>Or perhaps CGDB</h3>
+                                        <pre style="width: 110%"><code>cgdb --args php -d extension=modules/hello_world.so -r 'echo hello_world("Lorenzo");'</code></pre>
+                                    </section>
+                                </section>
+                                <section class="present stack" style="display: block;">
+                                    <section class="future" style="display: block;">
+                                        <h2>References</h2>
 
-                    <h3>Spaghetti.io</h3>
-                    <ul>
-                        <li><a href="http://spaghetti.io/cont/article/getting-started-with-php-extensions-development/52/1.html">Getting started with PHP Extensions development</a></li>
-                    </ul>
-                    <h3>Web</h3>
-                    <ul>
-                        <li><a href="https://github.com/php/php-src/tree/master/ext">php-src/ext</a></li>
-                        <li><a href="https://github.com/search?l=C&q=php&type=Repositories&utf8=%E2%9C%93">Search for PHP
-                            filtering for C language on GitHub</a></li>
-                        <li><a href="http://phpinternalsbook.com">phpinternalsbook.com</a></li>
-                        <li><a href="http://devzone.zend.com/303/extension-writing-part-i-introduction-to-php-and-zend/">Extension
-                            Writing Part I: Introduction to PHP and Zend</a></li>
-                        <li><a href="http://devzone.zend.com/317/extension-writing-part-ii-parameters-arrays-and-zvals">Extension
-                            Writing Part II: Parameters, Arrays, and ZVALs</a></li>
-                        <li><a href="http://php.net/manual/en/internals2.memory.management.php">Basic memory management</a></li>
-                    </ul>
-                    <h3>Books</h3>
-                    <ul>
-                        <li><a href="http://amzn.com/067232704X">Extending and Embedding PHP by Sara Golemon</a></li>
-                    </ul>
-                </section>
-            </section>
-            <section>
-                <h1>Questions?</h1>
-            </section>
-        </div>
+                                        <h3>Spaghetti.io</h3>
+                                        <ul>
+                                            <li><a href="http://spaghetti.io/cont/article/getting-started-with-php-extensions-development/52/1.html">Getting started with PHP Extensions development</a></li>
+                                        </ul>
+                                        <h3>Web</h3>
+                                        <ul>
+                                            <li><a href="https://github.com/php/php-src/tree/master/ext">php-src/ext</a></li>
+                                            <li><a href="https://github.com/search?l=C&q=php&type=Repositories&utf8=%E2%9C%93">Search for PHP
+                                                filtering for C language on GitHub</a></li>
+                                            <li><a href="http://phpinternalsbook.com">phpinternalsbook.com</a></li>
+                                            <li><a href="http://devzone.zend.com/303/extension-writing-part-i-introduction-to-php-and-zend/">Extension
+                                                Writing Part I: Introduction to PHP and Zend</a></li>
+                                            <li><a href="http://devzone.zend.com/317/extension-writing-part-ii-parameters-arrays-and-zvals">Extension
+                                                Writing Part II: Parameters, Arrays, and ZVALs</a></li>
+                                            <li><a href="http://php.net/manual/en/internals2.memory.management.php">Basic memory management</a></li>
+                                        </ul>
+                                        <h3>Books</h3>
+                                        <ul>
+                                            <li><a href="http://amzn.com/067232704X">Extending and Embedding PHP by Sara Golemon</a></li>
+                                        </ul>
+                                    </section>
+                                </section>
+                                <section>
+                                    <h1>Questions?</h1>
+                                </section>
+                            </div>
 
-    </div>
+                        </div>
 
-    <script src="lib/js/head.min.js"></script>
-    <script src="js/reveal.min.js"></script>
+                        <script src="lib/js/head.min.js"></script>
+                        <script src="js/reveal.min.js"></script>
 
-    <script>
+                        <script>
 
 // Full list of configuration options available here:
 // https://github.com/hakimel/reveal.js#configuration
-    Reveal.initialize({
+                        Reveal.initialize({
 controls: true,
 progress: true,
 history: true,
@@ -695,7 +701,7 @@ src: 'plugin/notes/notes.js', async: true, condition: function () {
 ]
 });
 
-    </script>
+                        </script>
 
-    </body>
-    </html>
+                        </body>
+                        </html>
